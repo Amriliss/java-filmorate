@@ -23,6 +23,8 @@ public class FilmController {
         id = 0;
         films = new HashMap<>();
     }
+
+    @ResponseBody
     @GetMapping(value = "/films")
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
@@ -39,6 +41,8 @@ public class FilmController {
         films.put(film.getId(), film);
         return film;
     }
+
+    @ResponseBody
     @PutMapping(value = "/films")
     public Film update(@Valid @RequestBody Film film) {
         log.info("Обновление фильма");
