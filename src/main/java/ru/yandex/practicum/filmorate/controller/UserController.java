@@ -50,6 +50,7 @@ public class UserController {
             throw new ValidationException("Ошибка добавления");
         }
     }
+
     @ResponseBody
     @GetMapping(value = "/users")
     public List<User> getAllUsers() {
