@@ -25,6 +25,7 @@ public class FilmController {
     }
 
     @ResponseBody
+
     @GetMapping(value = "/films")
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
@@ -43,6 +44,7 @@ public class FilmController {
     }
 
     @ResponseBody
+
     @PutMapping(value = "/films")
     public Film update(@Valid @RequestBody Film film) {
         log.info("Обновление фильма");
