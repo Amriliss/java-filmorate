@@ -51,7 +51,6 @@ public class UserController {
         }
     }
 
-
     @ResponseBody
     @GetMapping(value = "/users")
     public List<User> getAllUsers() {
