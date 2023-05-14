@@ -17,17 +17,17 @@ import java.util.Map;
 @RestController
 @Slf4j
 public class FilmController {
-    private final Map<Long, Film> films= new HashMap<>();
-    private long id= 0;
+    private final Map<Long, Film> films = new HashMap<>();
+    private long id = 0;
 
 
-    @GetMapping(value = "/films")
+    @GetMapping("/films")
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
     }
 
     @ResponseBody
-    @PostMapping(value = "/films")
+    @PostMapping("/films")
     public Film create(@Valid @RequestBody Film film) {
         log.info("Добавление фильма");
         validateFilm(film);
