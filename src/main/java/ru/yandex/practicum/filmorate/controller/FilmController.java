@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -24,7 +25,6 @@ public class FilmController {
         films = new HashMap<>();
     }
 
-
     @ResponseBody
     @GetMapping(value = "/films")
     public List<Film> getFilms() {
@@ -35,35 +35,32 @@ public class FilmController {
     @PostMapping(value = "/films")
     public Film create(@Valid @RequestBody Film film) {
         log.info("Добавление фильма");
-        if (!isValidFilm(film)) {
-            throw new ValidationException("Данные не верны");
-        }
+        validateFilm(film);
         film.setId(++id);
         films.put(film.getId(), film);
         return film;
     }
-
 
     @ResponseBody
     @PutMapping(value = "/films")
     public Film update(@Valid @RequestBody Film film) {
         log.info("Обновление фильма");
         if (films.containsKey(film.getId())) {
+            validateFilm(film);
             films.put(film.getId(), film);
             return film;
         } else {
-            throw new ValidationException("Фильм не найден");
+            throw new FilmNotFoundException("Фильм не найден");
         }
     }
 
-    private boolean isValidFilm(Film film) {
+    private void validateFilm(Film film) {
         if (film.getName().isEmpty() ||
                 film.getDescription().isEmpty() ||
                 film.getDescription().length() > 200 ||
                 LocalDate.parse(film.getReleaseDate(), DateTimeFormatter.ISO_DATE).isBefore(LocalDate.of(1895, 12, 28)) ||
                 film.getDuration() <= 0) {
-            return false;
+            throw new ValidationException("Данные не верны");
         }
-        return true;
     }
 }
