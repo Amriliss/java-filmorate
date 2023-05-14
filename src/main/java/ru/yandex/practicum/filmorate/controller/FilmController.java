@@ -21,13 +21,13 @@ public class FilmController {
     private long id= 0;
 
 
-    @GetMapping("/films")
+    @GetMapping(value = "/films")
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
     }
 
     @ResponseBody
-    @PostMapping("/films")
+    @PostMapping(value = "/films")
     public Film create(@Valid @RequestBody Film film) {
         log.info("Добавление фильма");
         validateFilm(film);
