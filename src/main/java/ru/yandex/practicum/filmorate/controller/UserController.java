@@ -23,7 +23,7 @@ public class UserController {
     public User create(@Valid @RequestBody User user) {
         log.info("Добавление пользователя");
         validateUser(user);
-        user.setId(count++);
+        user.setId(count + 1);
         users.put(user.getId(), user);
         return user;
     }
