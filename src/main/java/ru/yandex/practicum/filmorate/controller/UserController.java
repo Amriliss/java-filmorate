@@ -19,17 +19,18 @@ public class UserController {
     private final Map<Long, User> users = new HashMap<>();
     private long count = 0;
 
-    @ResponseBody
+
     @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user) {
         log.info("Добавление пользователя");
         validateUser(user);
-        user.setId(count++);
+
+        user.setId(count + 1);
         users.put(user.getId(), user);
         return user;
     }
 
-    @ResponseBody
+
     @PutMapping(value = "/users")
     public User update(@Valid @RequestBody User user) {
         log.info("Обновление данных пользователя");
@@ -40,11 +41,11 @@ public class UserController {
             count++;
             return user;
         } else {
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new DataNotFoundException("Пользователь не найден");
         }
     }
 
-    @ResponseBody
+
     @GetMapping(value = "/users")
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
@@ -53,12 +54,12 @@ public class UserController {
     private void validateUser(User user) {
         if (!user.getEmail().contains("@")) {
             log.error("Ошибки в e-mail пользователя");
-            throw new InvalidEmailException("Неправильный e-mail пользователя");
+            throw new ValidationException("Неправильный e-mail пользователя");
         }
 
         if (user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
             log.error("Неправильный логин пользователя");
-            throw new InvalidLoginException("Неправильный логин пользователя");
+            throw new ValidationException("Неправильный логин пользователя");
         }
 
         if (user.getName() == null || user.getName().isEmpty()) {
@@ -67,7 +68,7 @@ public class UserController {
 
         if (user.getBirthday() != null && user.getBirthday().isAfter(LocalDate.now())) {
             log.error("Неправильная дата рождения пользователя");
-            throw new InvalidBirthdayException("Неправильная дата рождения пользователя");
+            throw new ValidationException("Неправильная дата рождения пользователя");
         }
     }
 }
