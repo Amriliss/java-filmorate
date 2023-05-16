@@ -23,8 +23,7 @@ public class UserController {
     public User create(@Valid @RequestBody User user) {
         log.info("Добавление пользователя");
         validateUser(user);
-
-        user.setId(count + 1);
+        user.setId(count+ 1);
         users.put(user.getId(), user);
         return user;
     }
@@ -33,7 +32,6 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         log.info("Обновление данных пользователя");
         validateUser(user);
-
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
             count++;
