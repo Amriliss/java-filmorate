@@ -20,7 +20,7 @@ public class UserController {
     private long count = 0;
 
 
-    @PostMapping(value = "/users")
+    @PostMapping("/users")
     public User create(@Valid @RequestBody User user) {
         log.info("Добавление пользователя");
         validateUser(user);
@@ -31,7 +31,7 @@ public class UserController {
     }
 
 
-    @PutMapping(value = "/users")
+    @PutMapping("/users")
     public User update(@Valid @RequestBody User user) {
         log.info("Обновление данных пользователя");
         validateUser(user);
@@ -46,7 +46,7 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "/users")
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }

@@ -6,8 +6,8 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Setter
 @Getter
+@Setter
 public class Film {
     private long id;
 

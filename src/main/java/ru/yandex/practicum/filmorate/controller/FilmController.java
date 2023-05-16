@@ -20,6 +20,7 @@ public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
     private long id = 0;
 
+
     @GetMapping("/films")
     public List<Film> getFilms() {
         log.info("Получение списка фильмов");
