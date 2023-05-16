@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
-    private long id= 0;
+    private long id = 0;
 
 
     @GetMapping("/films")
