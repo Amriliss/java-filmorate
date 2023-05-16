@@ -61,7 +61,7 @@ public class FilmControllerTest {
 
     @Test
     public void testIncorrectRelease() {
-        film.setReleaseDate(String.valueOf(LocalDate.of(1895,12,27)));
+        film.setReleaseDate(String.valueOf(LocalDate.of(1895, 12, 27)));
         assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 
