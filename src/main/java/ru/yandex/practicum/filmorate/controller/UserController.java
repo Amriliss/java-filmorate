@@ -19,16 +19,16 @@ public class UserController {
     private final Map<Long, User> users = new HashMap<>();
     private long count = 0;
 
-    @PostMapping(value = "/users")
+    @PostMapping("/users")
     public User create(@Valid @RequestBody User user) {
         log.info("Добавление пользователя");
         validateUser(user);
-        user.setId(count + 1);
+        user.setId(count++);
         users.put(user.getId(), user);
         return user;
     }
 
-    @PutMapping(value = "/users")
+    @PutMapping("/users")
     public User update(@Valid @RequestBody User user) {
         log.info("Обновление данных пользователя");
         validateUser(user);
@@ -41,7 +41,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/users")
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
