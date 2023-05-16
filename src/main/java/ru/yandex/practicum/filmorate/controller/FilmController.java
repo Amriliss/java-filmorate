@@ -17,14 +17,8 @@ import java.util.Map;
 @RestController
 @Slf4j
 public class FilmController {
-    private final Map<Long, Film> films;
-    private long id;
-
-    public FilmController() {
-        id = 0;
-        films = new HashMap<>();
-    }
-
+    private final Map<Long, Film> films= new HashMap<>();
+    private long id = 0;
 
     @GetMapping(value = "/films")
     public List<Film> getFilms() {
