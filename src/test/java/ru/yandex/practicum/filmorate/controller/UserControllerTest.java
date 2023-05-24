@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 
@@ -15,11 +18,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserControllerTest {
 
     private User user;
+    private UserService userServise;
+    UserStorage userStorage;
     private UserController userController;
 
     @BeforeEach
     public void beforeEach() {
-        userController = new UserController();
+        userStorage = new InMemoryUserStorage();
+        userServise = new UserService(userStorage);
+        userController = new UserController(userServise);
         user = new User();
         user.setName("Гарри Поттер");
         user.setLogin("hpotter");
