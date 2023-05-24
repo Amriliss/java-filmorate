@@ -52,7 +52,7 @@ public class FilmService {
     public List<Film> getTopCountFilms(Integer count) {
         List<Film> films = filmStorage.getAllFilms();
         List<Film> topFilms = new ArrayList<>();
-        films.sort(new Film.compare());
+        films.sort(new Film.Compare());
         if (count > films.size()) {
             count = films.size();
         }

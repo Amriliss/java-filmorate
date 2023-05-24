@@ -29,7 +29,7 @@ public class Film {
         likes.remove(userId);
     }
 
-    public static class compare implements Comparator<Film> {
+    public static class Compare implements Comparator<Film> {
         @Override
         public int compare(Film f1, Film f2) {
             return f2.getLikes().size() - f1.getLikes().size();
