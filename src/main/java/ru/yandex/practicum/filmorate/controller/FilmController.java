@@ -3,13 +3,10 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +33,6 @@ public class FilmController {
     @PostMapping("/films")
     public Film create(@Valid @RequestBody Film film) {
         log.info("Добавление фильма");
-        validateFilm(film);
         return filmService.addFilm(film);
     }
 
@@ -44,7 +40,6 @@ public class FilmController {
     public Film update(@Valid @RequestBody Film film) {
         log.info("Обновление фильма");
 
-        validateFilm(film);
         return filmService.updateFilm(film);
     }
 
@@ -75,26 +70,4 @@ public class FilmController {
         return filmService.getTopCountFilms(count);
     }
 
-    private void validateFilm(Film film) {
-        if (film.getName().isEmpty()) {
-            throw new ValidationException("Название фильма не может быть пустым");
-        }
-
-        if (film.getDescription().isEmpty()) {
-            throw new ValidationException("Описание фильма не может быть пустым");
-        }
-
-        if (film.getDescription().length() > 200) {
-            throw new ValidationException("Описание фильма должно быть не более 200 символов");
-        }
-
-        LocalDate releaseDate = LocalDate.parse(film.getReleaseDate(), DateTimeFormatter.ISO_DATE);
-        if (releaseDate.isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ValidationException("Дата выпуска фильма должна быть после 28 декабря 1895 года");
-        }
-
-        if (film.getDuration() <= 0) {
-            throw new ValidationException("Длительность фильма должна быть положительным числом");
-        }
-    }
 }

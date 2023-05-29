@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -29,6 +30,9 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(User user) {
         user.setId(++id);
+        if (users.containsKey(user.getId())) {
+            throw new AlreadyExistException("Пользователь уже существует");
+        }
         users.put(user.getId(), user);
         return user;
     }

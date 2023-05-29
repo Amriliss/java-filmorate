@@ -2,19 +2,23 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
+    public static final Comparator<Film> FILM_COMPARATOR = Comparator.comparingLong(Film::getRate).reversed();
+    private final FilmStorage filmStorage;
 
-    FilmStorage filmStorage;
-
-    UserStorage userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
@@ -27,10 +31,12 @@ public class FilmService {
     }
 
     public Film addFilm(Film film) {
+        validateFilm(film);
         return filmStorage.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
+        validateFilm(film);
         return filmStorage.updateFilm(film);
     }
 
@@ -50,15 +56,33 @@ public class FilmService {
 
 
     public List<Film> getTopCountFilms(Integer count) {
-        List<Film> films = filmStorage.getAllFilms();
-        List<Film> topFilms = new ArrayList<>();
-        films.sort(new Film.Compare());
-        if (count > films.size()) {
-            count = films.size();
-        }
-        for (int i = 0; i < count; i++) {
-            topFilms.add(films.get(i));
-        }
-        return topFilms;
+        return filmStorage.getAllFilms().stream()
+                .sorted(FILM_COMPARATOR)
+                .limit(count)
+                .collect(Collectors.toList());
     }
+
+    private void validateFilm(Film film) {
+        if (film.getName().isEmpty()) {
+            throw new ValidationException("Название фильма не может быть пустым");
+        }
+
+        if (film.getDescription().isEmpty()) {
+            throw new ValidationException("Описание фильма не может быть пустым");
+        }
+
+        if (film.getDescription().length() > 200) {
+            throw new ValidationException("Описание фильма должно быть не более 200 символов");
+        }
+
+        LocalDate releaseDate = LocalDate.parse(film.getReleaseDate(), DateTimeFormatter.ISO_DATE);
+        if (releaseDate.isBefore(LocalDate.of(1895, 12, 28))) {
+            throw new ValidationException("Дата выпуска фильма должна быть после 28 декабря 1895 года");
+        }
+
+        if (film.getDuration() <= 0) {
+            throw new ValidationException("Длительность фильма должна быть положительным числом");
+        }
+    }
+
 }

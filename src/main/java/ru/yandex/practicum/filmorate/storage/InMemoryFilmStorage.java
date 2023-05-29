@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -18,6 +19,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film addFilm(Film film) {
         film.setId(++id);
+        if (films.containsKey(film.getId())) {
+            throw new AlreadyExistException("Фильм уже существует");
+        }
         films.put(film.getId(), film);
         return film;
     }
