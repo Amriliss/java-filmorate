@@ -44,13 +44,6 @@ public class Film {
         return likes.size();
     }
 
-    public static class compare implements Comparator<Film> {
-        @Override
-        public int compare(Film f1, Film f2) {
-            return f2.getLikes().size() - f1.getLikes().size();
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
