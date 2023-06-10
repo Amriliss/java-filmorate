@@ -5,6 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 
@@ -14,12 +19,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 
 public class FilmControllerTest {
+
+    FilmStorage filmStorage;
+    UserStorage userStorage;
+    private FilmService filmService;
     private Film film;
     private FilmController filmController;
 
     @BeforeEach
     public void beforeEach() {
-        filmController = new FilmController();
+        userStorage = new InMemoryUserStorage();
+        filmStorage = new InMemoryFilmStorage();
+        filmService = new FilmService(filmStorage, userStorage);
+        filmController = new FilmController(filmService);
         film = new Film();
         film.setName("Гарри Поттер и философский камень");
         film.setDescription("Мальчик-сирота Гарри Поттер узнает, что он - волшебник, " +
