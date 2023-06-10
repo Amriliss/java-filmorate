@@ -1,0 +1,116 @@
+package ru.yandex.practicum.filmorate.storage;
+
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.model.User;
+
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import static java.lang.String.format;
+
+@Slf4j
+@Repository
+@RequiredArgsConstructor
+@Qualifier("UserDBStorage")
+public class UserDBStorage implements UserStorage {
+    private final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public User createUser(User user) {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("users")
+                .usingGeneratedKeyColumns("id");
+        user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
+        log.info("Добавлен новый пользователь с ID={}", user.getId());
+        return user;
+    }
+
+    @Override
+    public User updateUser(User user) {
+        jdbcTemplate.update(""
+                        + "UPDATE users "
+                        + "SET email=?, login=?, name=?, birthday=? "
+                        + "WHERE id=?",
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                Date.valueOf(user.getBirthday()),
+                user.getId());
+        User result = getUserById(user.getId());
+        log.info("Обновлён пользователь: {}", result);
+        return result;
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        try {
+            User user = jdbcTemplate.queryForObject(format(""
+                    + "SELECT id, email, login, name, birthday "
+                    + "FROM users "
+                    + "WHERE id=%d", id), this::userMapping);
+            log.info("Возвращён пользователь: {}", user);
+            return user;
+        } catch (RuntimeException e) {
+            throw new DataNotFoundException("Пользователь не найден");
+        }
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        List<User> users = jdbcTemplate.query(""
+                + "SELECT id, email, login, name, birthday "
+                + "FROM users", this::userMapping);
+        log.info("Возвращены все пользователи: {}.", users);
+        return users;
+    }
+
+    @Override
+    public void addFriend(Long userId, Long friendId) {
+        getUserById(friendId);
+        getUserById(userId).addFriend(friendId);
+
+        String sql = "INSERT INTO friends (user_id, friend_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, userId, friendId);
+    }
+
+    public void deleteFriend(Long userId, Long friendId) {
+        getUserById(friendId);
+        getUserById(userId).deleteFriend(friendId);
+
+        String sql = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
+        jdbcTemplate.update(sql, userId, friendId);
+    }
+
+    public List<User> getAllFriends(Long userId) {
+        User user = getUserById(userId);
+
+        String sql = "SELECT friend_id, email, login, name, birthday FROM friends" +
+                " INNER JOIN users ON friends.friend_id = users.id WHERE friends.user_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new User(
+                        rs.getLong("friend_id"),
+                        rs.getString("email"),
+                        rs.getString("login"),
+                        rs.getString("name"),
+                        rs.getDate("birthday").toLocalDate()),
+                userId);
+    }
+
+    private User userMapping(ResultSet rs, int rowNum) throws SQLException {
+        User user = new User();
+        user.setId(rs.getLong("id"));
+        user.setEmail(rs.getString("email"));
+        user.setLogin(rs.getString("login"));
+        user.setName(rs.getString("name"));
+        user.setBirthday(rs.getDate("birthday").toLocalDate());
+        return user;
+    }
+}
