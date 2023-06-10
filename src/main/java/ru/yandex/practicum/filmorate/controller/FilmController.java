@@ -72,8 +72,8 @@ public class FilmController {
 
         return filmService.getTopCountFilms(count);
 
-
     }
+
     @GetMapping("/mpa")
     public Collection<Mpa> getAllMpa() {
         log.info("Получен запрос на получение всех рейтингов");
