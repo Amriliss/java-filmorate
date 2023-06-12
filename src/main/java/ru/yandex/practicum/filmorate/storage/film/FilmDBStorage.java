@@ -138,10 +138,7 @@ public class FilmDBStorage implements FilmStorage {
         film.setMpa(getMpaById(film.getMpa().getId()));
         if (film.getGenres() != null) {
 
-            film.setGenres(film.getGenres().stream()
-                    .map(g -> getGenreById(g.getId()))
-                    .sorted(Comparator.comparing(Genre::getId))
-                    .collect(Collectors.toCollection(LinkedHashSet::new)));
+            film.setGenres(film.getGenres().stream().map(g -> getGenreById(g.getId())).sorted(Comparator.comparing(Genre::getId)).collect(Collectors.toCollection(LinkedHashSet::new)));
             deleteGenres(film.getId());
             addGenres(film);
         }
