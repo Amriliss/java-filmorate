@@ -134,7 +134,7 @@ public class FilmDBStorage implements FilmStorage {
                 "DURATION = ?, " +
                 "RATING_ID = ? " +
                 "WHERE ID = ?";
-        jdbcTemplate.update(sql,film.getName(),film.getDescription(),film.getReleaseDate(),film.getDuration(),film.getMpa().getId(),film.getId());
+        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), film.getId());
         film.setMpa(getMpaById(film.getMpa().getId()));
         if (film.getGenres() != null) {
 
@@ -148,6 +148,7 @@ public class FilmDBStorage implements FilmStorage {
     @Override
     public List<Film> getAllFilms() {
         String sql = "SELECT * FROM films";
+
         return jdbcTemplate.query(sql, (rs, rowNum) -> new Film(
                 rs.getLong("id"),
                 rs.getString("name"),
