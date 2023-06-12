@@ -157,6 +157,7 @@ public class FilmDBStorage implements FilmStorage {
                 new HashSet<>(getFilmLikes(rs.getLong("id"))),
                 getMpaById(rs.getInt("rating_id")),
                 getFilmGenres(rs.getLong("id")))
+
         );
     }
 
