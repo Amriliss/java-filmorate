@@ -14,6 +14,7 @@ import java.util.*;
 @EqualsAndHashCode
 @Getter
 @Setter
+@Builder
 public class User {
     private long id;
     @JsonIgnore
@@ -50,7 +51,7 @@ public class User {
         return Objects.hash(getId());
     }
 
-    public Map<String,Object> toMap() {
+    public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
         values.put("email", email);
         values.put("login", login);

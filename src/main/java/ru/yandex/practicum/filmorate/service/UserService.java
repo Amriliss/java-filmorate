@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,14 +37,19 @@ public class UserService {
     }
 
     public void addFriend(Long id, Long friendId) {
+        getUserById(friendId);
+        getUserById(id).addFriend(friendId);
         userStorage.addFriend(id, friendId);
     }
 
     public void deleteFriend(Long id, Long friendId) {
+        getUserById(friendId);
+        getUserById(id).deleteFriend(friendId);
         userStorage.deleteFriend(id, friendId);
     }
 
     public List<User> getAllFriends(Long id) {
+        getUserById(id);
         return userStorage.getAllFriends(id);
 
     }

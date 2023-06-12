@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -50,29 +48,12 @@ public class FilmService {
 
     public void deleteLike(Long id, Long userId) {
         userStorage.getUserById(userId);
-        filmStorage.getFilmById(id).deleteLike(userId);
+        filmStorage.deleteLike(id, userId);
     }
 
     public List<Film> getTopCountFilms(Integer count) {
         return filmStorage.getTopCountFilms(count);
 
-    }
-
-    public List<Mpa> getAllMpa() {
-        return filmStorage.getMpas();
-    }
-
-    public Mpa getMpaById(Integer id) {
-        return filmStorage.getMpaById(id);
-    }
-
-
-    public List<Genre> getAllGenres() {
-        return filmStorage.getGenres();
-    }
-
-    public Genre getGenreById(Integer id) {
-        return filmStorage.getGenreById(id);
     }
 
     private void validateFilm(Film film) {

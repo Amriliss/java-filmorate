@@ -72,29 +72,6 @@ public class FilmController {
 
         return filmService.getTopCountFilms(count);
 
-    }
 
-    @GetMapping("/mpa")
-    public Collection<Mpa> getAllMpa() {
-        log.info("Получен запрос на получение всех рейтингов");
-        return filmService.getAllMpa();
-    }
-
-    @GetMapping("/mpa/{id}")
-    public Mpa getMpaById(@PathVariable Integer id) {
-        log.info("Получен запрос на получение рейтинга с ID={}", id);
-        return filmService.getMpaById(id);
-    }
-
-    @GetMapping("/genres")
-    public Collection<Genre> getAllGenre() {
-        log.info("Получен запрос на получение всех рейтингов");
-        return filmService.getAllGenres();
-    }
-
-    @GetMapping("/genres/{id}")
-    public Genre getGenreById(@PathVariable Integer id) {
-        log.info("Получен запрос на получение рейтинга с ID={}", id);
-        return filmService.getGenreById(id);
     }
 }

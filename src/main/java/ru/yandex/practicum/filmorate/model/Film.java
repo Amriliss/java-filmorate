@@ -9,12 +9,11 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.*;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@Builder
 public class Film {
     private long id;
     @NotBlank(message = "Поле 'название или описание' не должно быть пустым")
@@ -27,7 +26,7 @@ public class Film {
     @JsonIgnore
     private Set<Long> likes = new HashSet<>();
     private Mpa mpa = new Mpa();
-    private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
+    private Set<Genre> genres = new TreeSet<>(Comparator.comparingLong(Genre::getId));
 
     public void addLike(Long userId) {
         likes.add(userId);
@@ -54,7 +53,7 @@ public class Film {
         return Objects.hash(getId());
     }
 
-    public Map<String,Object> toMap() {
+    public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", name);
         values.put("description", description);

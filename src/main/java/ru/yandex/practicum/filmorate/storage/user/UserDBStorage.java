@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.user;
 
 
 import lombok.RequiredArgsConstructor;
@@ -66,42 +66,29 @@ public class UserDBStorage implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        List<User> users = jdbcTemplate.query(""
-                + "SELECT id, email, login, name, birthday "
-                + "FROM users", this::userMapping);
-        log.info("Возвращены все пользователи: {}.", users);
-        return users;
+        log.info("Возвращены все пользователи");
+        return jdbcTemplate.query("select * from USERS", this::userMapping);
     }
 
     @Override
     public void addFriend(Long userId, Long friendId) {
-        getUserById(friendId);
-        getUserById(userId).addFriend(friendId);
+
 
         String sql = "INSERT INTO friends (user_id, friend_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, userId, friendId);
     }
 
     public void deleteFriend(Long userId, Long friendId) {
-        getUserById(friendId);
-        getUserById(userId).deleteFriend(friendId);
+
 
         String sql = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
         jdbcTemplate.update(sql, userId, friendId);
     }
 
     public List<User> getAllFriends(Long userId) {
-        User user = getUserById(userId);
-
-        String sql = "SELECT friend_id, email, login, name, birthday FROM friends" +
+        String sql = "SELECT friend_id AS id, email, login, name, birthday FROM friends" +
                 " INNER JOIN users ON friends.friend_id = users.id WHERE friends.user_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new User(
-                        rs.getLong("friend_id"),
-                        rs.getString("email"),
-                        rs.getString("login"),
-                        rs.getString("name"),
-                        rs.getDate("birthday").toLocalDate()),
-                userId);
+        return jdbcTemplate.query(sql, this::userMapping, userId);
     }
 
     private User userMapping(ResultSet rs, int rowNum) throws SQLException {
