@@ -1,20 +1,18 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
+    public static final Comparator<Film> FILM_COMPARATOR = Comparator.comparingLong(Film::getRate).reversed();
     private final Map<Long, Film> films = new HashMap<>();
     private static long id = 0;
-
 
     @Override
     public Film addFilm(Film film) {
@@ -32,6 +30,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public void addLike(Long id, Long userId) {
+        getFilmById(id).addLike(userId);
+    }
+
+    @Override
+    public void deleteLike(Long id, Long userId) {
+        getFilmById(id).deleteLike(userId);
+    }
+
+    @Override
     public Film updateFilm(Film film) {
         if (!films.containsKey(film.getId())) {
             throw new DataNotFoundException("Фильм не найден");
@@ -46,6 +54,14 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new DataNotFoundException("Фильм не найден");
         }
         return films.get(id);
+    }
+
+    @Override
+    public List<Film> getTopCountFilms(Integer count) {
+        return getAllFilms().stream()
+                .sorted(FILM_COMPARATOR)
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
 

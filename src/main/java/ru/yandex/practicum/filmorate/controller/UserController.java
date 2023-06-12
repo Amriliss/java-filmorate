@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +23,14 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User update(@Valid @RequestBody User user) {
+    public User update(@RequestBody User user) {
         log.info("Обновление данных пользователя");
-        validateUser(user);
         return userService.updateUser(user);
     }
 
     @PostMapping("/users")
-    public User create(@Valid @RequestBody User user) {
+    public User create(@RequestBody User user) {
         log.info("Добавление пользователя");
-        validateUser(user);
         return userService.createUser(user);
     }
 
@@ -72,7 +69,6 @@ public class UserController {
         log.info("Получение общих друзей пользователей с id {} и с id {}", id, otherId);
         return userService.getCommonFriends(id, otherId);
     }
-
 
     private void validateUser(User user) {
         if (!user.getEmail().contains("@")) {

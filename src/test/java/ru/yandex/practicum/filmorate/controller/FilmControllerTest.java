@@ -6,10 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 
@@ -36,7 +36,7 @@ public class FilmControllerTest {
         film.setName("Гарри Поттер и философский камень");
         film.setDescription("Мальчик-сирота Гарри Поттер узнает, что он - волшебник, " +
                 "и начинает свое обучение в Хогвартсе, школе волшебства и магии.");
-        film.setReleaseDate(String.valueOf(LocalDate.of(2001, 11, 16)));
+        film.setReleaseDate(LocalDate.of(2001, 11, 16));
         film.setDuration(152);
         film.setId(1);
     }
@@ -73,7 +73,7 @@ public class FilmControllerTest {
 
     @Test
     public void testIncorrectRelease() {
-        film.setReleaseDate(String.valueOf(LocalDate.of(1895, 12, 27)));
+        film.setReleaseDate(LocalDate.of(1895, 12, 27));
         assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 

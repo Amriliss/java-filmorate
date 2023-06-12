@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
@@ -50,5 +50,30 @@ public class InMemoryUserStorage implements UserStorage {
         } else {
             throw new DataNotFoundException("Пользователь не найден");
         }
+    }
+
+    @Override
+    public void addFriend(Long id, Long friendId) {
+        User user = getUserById(id);
+        User friend = getUserById(friendId);
+        user.addFriend(friendId);
+        friend.addFriend(id);
+    }
+
+    @Override
+    public void deleteFriend(Long id, Long friendId) {
+        User user = getUserById(id);
+        User friend = getUserById(friendId);
+        user.deleteFriend(friendId);
+        friend.deleteFriend(id);
+    }
+
+    @Override
+    public List<User> getAllFriends(Long id) {
+        List<User> friends = new ArrayList<>();
+        for (Long friendId : getUserById(id).getFriends()) {
+            friends.add(getUserById(friendId));
+        }
+        return friends;
     }
 }
