@@ -134,13 +134,7 @@ public class FilmDBStorage implements FilmStorage {
                 "DURATION = ?, " +
                 "RATING_ID = ? " +
                 "WHERE ID = ?";
-        jdbcTemplate.update(sql,
-                film.getName(),
-                film.getDescription(),
-                film.getReleaseDate(),
-                film.getDuration(),
-                film.getMpa().getId(),
-                film.getId());
+        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), film.getId());
 
         film.setMpa(getMpaById(film.getMpa().getId()));
         if (film.getGenres() != null) {
