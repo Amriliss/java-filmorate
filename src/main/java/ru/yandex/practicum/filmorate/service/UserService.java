@@ -1,17 +1,24 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Update;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserService {
     UserStorage userStorage;
 
@@ -20,11 +27,13 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User createUser(User user) {
+    public User createUser(@Valid User user) {
+        validateUser(user);
         return userStorage.createUser(user);
     }
 
-    public User updateUser(User user) {
+    public User updateUser(@Validated(Update.class) User user) {
+        validateUser(user);
         return userStorage.updateUser(user);
     }
 
@@ -68,5 +77,27 @@ public class UserService {
         }
 
         return new ArrayList<User>(commonFriends);
+    }
+
+
+    private void validateUser(User user) {
+        if (!user.getEmail().contains("@")) {
+            log.error("Ошибки в e-mail пользователя");
+            throw new ValidationException("Неправильный e-mail пользователя");
+        }
+
+        if (user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
+            log.error("Неправильный логин пользователя");
+            throw new ValidationException("Неправильный логин пользователя");
+        }
+
+        if (user.getName() == null || user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
+
+        if (user.getBirthday() != null && user.getBirthday().isAfter(LocalDate.now())) {
+            log.error("Неправильная дата рождения пользователя");
+            throw new ValidationException("Неправильная дата рождения пользователя");
+        }
     }
 }

@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmoRateApplicationTests {
-   private final UserDBStorage userStorage;
+    private final UserDBStorage userStorage;
     private final FilmDBStorage filmStorage;
     private final FilmService filmService;
     private final UserService userService;

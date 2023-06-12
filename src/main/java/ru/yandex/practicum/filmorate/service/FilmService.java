@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,12 +28,12 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
-    public Film addFilm(Film film) {
+    public Film addFilm(@Valid Film film) {
         validateFilm(film);
         return filmStorage.addFilm(film);
     }
 
-    public Film updateFilm(Film film) {
+    public Film updateFilm(@Valid Film film) {
         validateFilm(film);
         return filmStorage.updateFilm(film);
     }

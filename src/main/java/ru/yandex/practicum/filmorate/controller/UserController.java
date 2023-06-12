@@ -24,16 +24,14 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User update(@Valid @RequestBody User user) {
+    public User update(@RequestBody User user) {
         log.info("Обновление данных пользователя");
-        validateUser(user);
         return userService.updateUser(user);
     }
 
     @PostMapping("/users")
-    public User create(@Valid @RequestBody User user) {
+    public User create(@RequestBody User user) {
         log.info("Добавление пользователя");
-        validateUser(user);
         return userService.createUser(user);
     }
 
